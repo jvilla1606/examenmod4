@@ -39,18 +39,27 @@ class Carrito {
 
 const carrito = new Carrito();
 
-function agregarProducto() {
-    const nombre = prompt('Ingresa el nombre del producto:');
-    const precio = parseFloat(prompt('Ingresa el precio del producto:'));
+// Lista de productos disponibles
+const productosDisponibles = [
+    { id: 1, nombre: 'Leche', precio: 1000 },
+    { id: 2, nombre: 'Pan', precio: 2000 },
+    { id: 3, nombre: 'Queso', precio: 1200 },
+    { id: 4, nombre: 'Mermelada', precio: 1000 },
+    { id: 5, nombre: 'Azúcar', precio: 1500 }
+];
 
-    if (!nombre || isNaN(precio) || precio <= 0) {
-        alert('Datos inválidos. Por favor, ingresa un nombre válido y un precio mayor a 0.');
+function agregarProducto() {
+    const idProducto = parseInt(prompt('Ingresa el número del producto que deseas agregar:'));
+    const productoSeleccionado = productosDisponibles.find(p => p.id === idProducto);
+
+    if (!productoSeleccionado) {
+        alert('Producto no encontrado. Por favor, ingresa un número válido de la lista de productos.');
         return agregarProducto();
     }
 
-    const producto = new Producto(nombre, precio);
+    const producto = new Producto(productoSeleccionado.nombre, productoSeleccionado.precio);
     carrito.agregarProducto(producto);
-    alert(`${nombre} agregado al carrito.`);
+    alert(`${producto.nombre} agregado al carrito.`);
     actualizarTotal();
 
     const continuar = confirm('¿Deseas agregar otro producto?');

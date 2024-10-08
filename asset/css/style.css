@@ -6,7 +6,7 @@ body {
     padding: 20px;
 }
 
-h1 {
+h1, h2 {
     text-align: center;
     color: #007BFF;
 }
@@ -37,7 +37,7 @@ button:hover {
 
 #total {
     font-weight: bold;
-    color: #28a745; /* Total en verde */
+    color: #28a745;
 }
 
 ul {
