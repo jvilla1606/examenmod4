@@ -11,12 +11,11 @@ class Carrito {
         this.productos = [];
     }
 
-    agregarProducto(producto, cantidad) {
+    agregarProducto(producto) {
         const productoExistente = this.productos.find(p => p.nombre === producto.nombre);
         if (productoExistente) {
-            productoExistente.cantidad += cantidad;
+            productoExistente.cantidad++;
         } else {
-            producto.cantidad = cantidad;
             this.productos.push(producto);
         }
     }
@@ -35,11 +34,6 @@ class Carrito {
             item.innerHTML = `<strong>${producto.nombre}</strong> - $${producto.precio} x ${producto.cantidad} = $${producto.precio * producto.cantidad}`;
             listaDetalles.appendChild(item);
         });
-    }
-
-    actualizarCarrito() {
-        this.mostrarDetalles();
-        document.getElementById('total').innerText = this.calcularTotal();
     }
 }
 
@@ -63,21 +57,24 @@ function agregarProducto() {
         return agregarProducto();
     }
 
-    const cantidad = parseInt(prompt(`¿Cuántas unidades de ${productoSeleccionado.nombre} deseas agregar?`));
-    if (isNaN(cantidad) || cantidad <= 0) {
-        alert('Cantidad inválida. Por favor, ingresa un número mayor a 0.');
-        return agregarProducto();
-    }
-
     const producto = new Producto(productoSeleccionado.nombre, productoSeleccionado.precio);
-    carrito.agregarProducto(producto, cantidad);
-    alert(`${cantidad} unidad(es) de ${producto.nombre} agregado(s) al carrito.`);
-    carrito.actualizarCarrito();
+    carrito.agregarProducto(producto);
+    alert(`${producto.nombre} agregado al carrito.`);
+    actualizarTotal();
 
     const continuar = confirm('¿Deseas agregar otro producto?');
     if (continuar) {
         agregarProducto();
     }
+}
+
+function actualizarTotal() {
+    document.getElementById('total').innerText = carrito.calcularTotal();
+}
+
+function mostrarDetalles() {
+    carrito.mostrarDetalles();
+    actualizarTotal();
 }
 
 function finalizarCompra() {
@@ -89,5 +86,6 @@ function finalizarCompra() {
     const total = carrito.calcularTotal();
     alert(`Compra finalizada. El total a pagar es $${total}. ¡Gracias por tu compra!`);
     carrito.productos = [];
-    carrito.actualizarCarrito();
+    actualizarTotal();
+    document.getElementById('detalles').innerHTML = '';
 }
