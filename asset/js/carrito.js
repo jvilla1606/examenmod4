@@ -1,9 +1,8 @@
 class Producto {
-    //constructor(nombre, precio, imagen) {
     constructor(nombre, precio) {
         this.nombre = nombre;
         this.precio = precio;
-       // this.imagen = imagen; // URL o base64 de la imagen.
+        this.cantidad = 1;
     }
 }
 
@@ -13,11 +12,16 @@ class Carrito {
     }
 
     agregarProducto(producto) {
-        this.productos.push(producto);
+        const productoExistente = this.productos.find(p => p.nombre === producto.nombre);
+        if (productoExistente) {
+            productoExistente.cantidad++;
+        } else {
+            this.productos.push(producto);
+        }
     }
 
     calcularTotal() {
-        return this.productos.reduce((total, producto) => total + producto.precio, 0);
+        return this.productos.reduce((total, producto) => total + producto.precio * producto.cantidad, 0);
     }
 
     mostrarDetalles() {
@@ -27,18 +31,7 @@ class Carrito {
         this.productos.forEach(producto => {
             const item = document.createElement('li');
             item.classList.add('producto-item');
-
-            const img = document.createElement('img');
-            img.src = producto.imagen;
-            img.alt = producto.nombre;
-            img.classList.add('producto-imagen');
-
-            const info = document.createElement('div');
-            info.classList.add('producto-info');
-            info.innerHTML = `<strong>${producto.nombre}</strong> - $${producto.precio}`;
-
-            item.appendChild(img);
-            item.appendChild(info);
+            item.innerHTML = `<strong>${producto.nombre}</strong> - $${producto.precio} x ${producto.cantidad} = $${producto.precio * producto.cantidad}`;
             listaDetalles.appendChild(item);
         });
     }
@@ -49,14 +42,13 @@ const carrito = new Carrito();
 function agregarProducto() {
     const nombre = prompt('Ingresa el nombre del producto:');
     const precio = parseFloat(prompt('Ingresa el precio del producto:'));
-    //const imagen = prompt('Ingresa la URL de la imagen del producto:');
 
-    if (!nombre || isNaN(precio) || precio <= 0 || !imagen) {
-        alert('Datos inválidos. Por favor, ingresa un nombre válido, un precio mayor a 0, y una URL de imagen.');
+    if (!nombre || isNaN(precio) || precio <= 0) {
+        alert('Datos inválidos. Por favor, ingresa un nombre válido y un precio mayor a 0.');
         return agregarProducto();
     }
 
-    const producto = new Producto(nombre, precio, imagen);
+    const producto = new Producto(nombre, precio);
     carrito.agregarProducto(producto);
     alert(`${nombre} agregado al carrito.`);
     actualizarTotal();
@@ -69,6 +61,11 @@ function agregarProducto() {
 
 function actualizarTotal() {
     document.getElementById('total').innerText = carrito.calcularTotal();
+}
+
+function mostrarDetalles() {
+    carrito.mostrarDetalles();
+    actualizarTotal();
 }
 
 function finalizarCompra() {
